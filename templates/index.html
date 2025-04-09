@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Iron Deficiency Prediction</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --accent: #4895ef;
+      --light: #f8f9fa;
+      --dark: #212529;
+    }
+    
+    body {
+      background-color: #f5f7ff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      position: relative;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    
+    .accent-circle {
+      position: fixed;
+      border-radius: 50%;
+      z-index: -1;
+      opacity: 0.5;
+    }
+    
+    .accent-circle-1 {
+      width: 300px;
+      height: 300px;
+      background-color: rgba(67, 97, 238, 0.15);
+      top: -100px;
+      left: -100px;
+    }
+    
+    .accent-circle-2 {
+      width: 400px;
+      height: 400px;
+      background-color: rgba(67, 150, 238, 0.1);
+      bottom: -200px;
+      right: -200px;
+    }
+    
+    .accent-circle-3 {
+      width: 200px;
+      height: 200px;
+      background-color: rgba(63, 55, 201, 0.08);
+      top: 50%;
+      right: 10%;
+    }
+    
+    .main-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .header h1 {
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .header p {
+      color: #6c757d;
+    }
+    
+    .card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+      margin-bottom: 2rem;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .upload-area {
+      border: 2px dashed #d1d5db;
+      border-radius: 10px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .upload-area:hover {
+      border-color: var(--primary);
+      background-color: rgba(67, 97, 238, 0.05);
+    }
+    
+    .upload-icon {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    
+    .upload-area input[type="file"] {
+      display: none;
+    }
+    
+    .file-name {
+      margin-top: 1rem;
+      font-weight: 500;
+      color: var(--primary);
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      border: none;
+      border-radius: 30px;
+      padding: 10px 30px;
+      font-weight: 500;
+      box-shadow: 0 4px 6px rgba(67, 97, 238, 0.25);
+      transition: all 0.3s;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(67, 97, 238, 0.3);
+    }
+    
+    .btn-secondary {
+      background-color: #e2e8f0;
+      color: var(--dark);
+      border: none;
+      border-radius: 30px;
+      padding: 10px 20px;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #d1d5db;
+    }
+    
+    .result-card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    
+    .result-header {
+      background-color: #f8f9fa;
+      padding: 1.5rem;
+      text-align: center;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .badge-wrapper {
+      background-color: #e6fffa;
+      color: #0694a2;
+      display: inline-block;
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+    
+    .prediction-label {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    
+    .result-body {
+      padding: 1.5rem;
+      text-align: center;
+    }
+    
+    .result-image {
+      max-width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 2rem;
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+    
+    /* Camera interface styles */
+    .camera-interface {
+      display: none;
+      position: relative;
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .camera-interface video {
+      width: 100%;
+      border-radius: 8px;
+      max-height: 400px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .camera-interface button {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      background-color: var(--primary);
+      border: none;
+      border-radius: 20px;
+      color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    
+    .camera-interface button:hover {
+      background-color: var(--secondary);
+      transform: translateX(-50%) translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.25);
+    }
+    
+    .camera-icon {
+      font-size: 2rem;
+      cursor: pointer;
+      color: var(--primary);
+      margin-right: 10px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .upload-area {
+        padding: 1.5rem;
+      }
+      
+      .upload-icon {
+        font-size: 2.5rem;
+      }
+      
+      .camera-interface video {
+        max-height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+           <!-- Accent design elements -->
+  <div class="accent-circle accent-circle-1"></div>
+  <div class="accent-circle accent-circle-2"></div>
+  <div class="accent-circle accent-circle-3"></div>
+
+  <div class="container py-5">
+    <div class="main-container">
+      <div class="header">
+        <h1>Cancer Prediction</h1>
+        <p>Upload your medical image for professional analysis and prediction</p>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <form action="/" method="post" enctype="multipart/form-data" id="upload-form">
+            <div class="upload-area" id="upload-area">
+              <div class="upload-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+              </div>
+              <h4>Upload your image</h4>
+              <p class="text-muted">Drag and drop your file here or click to browse</p>
+              <input type="file" class="form-control" name="my_image" id="file-input" accept="image/*">
+              <div class="file-name" id="file-name"></div>
+            </div>
+
+                <!-- Camera interface -->
+            <div class="camera-interface" id="camera-interface">
+              <video id="video" autoplay></video>
+              <button type="button" id="capture-btn">Capture</button>
+            </div>
+            
+            <div class="text-center mt-3">
+              <button type="button" class="btn btn-secondary" id="use-camera-btn">
+                <i class="fas fa-camera me-2"></i>Use Camera
+              </button>
+              <button type="submit" class="btn btn-primary px-5 mt-3">
+                <i class="fas fa-search-plus me-2"></i>Analyze Image
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      {% if prediction %}
+      <div class="result-card">
+        <div class="result-header">
+          <div class="badge-wrapper">Analysis Complete</div>
+          <h4 class="mb-1">Result</h4>
+          <span class="prediction-label">{{ prediction }}</span>
+        </div>
+        <div class="result-body">
+          <img src="{{ url_for('serve_image', filename='temp.jpg') }}" class="result-image" alt="Analyzed Image">
+        </div>
+      </div>
+      {% endif %}
+      
+      <div class="footer">
+        <p>© 2025 Iron Deficiency Prediction System. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Prevents default drag events
+    document.getElementById('upload-area').addEventListener('click', function() {
+      document.getElementById('file-input').click();
+    });
+    
+    document.getElementById('file-input').addEventListener('change', function() {
+      if(this.files && this.files[0]) {
+        document.getElementById('file-name').textContent = this.files[0].name;
+      }
+    });
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      document.getElementById('upload-area').addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    document.getElementById('upload-area').addEventListener('drop', handleDrop, false);
+    
+    function handleDrop(e) {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      document.getElementById('file-input').files = files;
+      if(files && files[0]) {
+        document.getElementById('file-name').textContent = files[0].name;
+      }
+    }
+    
+    // Camera feature
+    const cameraInterface = document.getElementById('camera-interface');
+    const video = document.getElementById('video');
+    const captureBtn = document.getElementById('capture-btn');
+    const useCameraBtn = document.getElementById('use-camera-btn');
+    const uploadArea = document.getElementById('upload-area');
+    let stream;
+
+    useCameraBtn.addEventListener('click', function() {
+      cameraInterface.style.display = 'block';
+      uploadArea.style.display = 'none';
+      
+      // Start camera
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(s) {
+          stream = s;
+          video.srcObject = stream;
+        })
+        .catch(function(err) {
+          console.log("Error accessing camera: " + err);
+          alert("Unable to access camera. Please ensure you've granted camera permissions.");
+          cameraInterface.style.display = 'none';
+          uploadArea.style.display = 'block';
+        });
+    });
+
+    captureBtn.addEventListener('click', function() {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // Convert the captured image to a file and update the input field
+      canvas.toBlob(function(blob) {
+        const file = new File([blob], "captured_image.jpg", { type: "image/jpeg" });
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        document.getElementById('file-input').files = dataTransfer.files;
+        document.getElementById('file-name').textContent = file.name;
+        
+        // Stop the camera stream
+        stream.getTracks().forEach(track => track.stop());
+        cameraInterface.style.display = 'none';
+        uploadArea.style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>
+

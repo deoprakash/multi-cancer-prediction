@@ -1,0 +1,1 @@
+classes : ['ALL', 'Brain Cancer', 'Breast Cancer', 'Cervical Cancer', 'Healthy', 'Kidney Cancer', 'Lung and Colon Cancer', 'Lymphoma', 'Oral Cancer']
