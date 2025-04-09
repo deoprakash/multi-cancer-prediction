@@ -112,7 +112,7 @@ Developed by DEO PRAKASH. Contributions and feedback welcome!
 If you have any questions, suggestions, or need support, feel free to reach out:
 
 - 📧 Email: [deoprakash364@gmail.com](mailto:deoprakash364@gmail.com)
-- 💼 LinkedIn: [Deo Prakash]([www.linkedin.com/in/deo-prakash-152265225](https://www.linkedin.com/in/deo-prakash-152265225))
+- 💼 LinkedIn: [Deo Prakash](https://www.linkedin.com/in/deo-prakash-152265225)
 - 🧑‍💻 GitHub: [deoprakash](https://github.com/deoprakash)
 
 ---
